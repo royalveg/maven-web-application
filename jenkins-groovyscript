@@ -1,0 +1,24 @@
+node{
+echo "the jobname is: ${env.JOB_NAME}"
+echo "the node name is: ${env.NODE_NAME}" 
+properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '5')), [$class: 'JobLocalConfiguration', changeReasonComment: ''], pipelineTriggers([pollSCM('* * * * *')])])
+def mavenhome =  tool name: 'maven-3.8.6'
+stage('githubcode'){
+git branch: 'development', credentialsId: 'd8225d5d-4e94-4274-b08b-8b05b7819134', url: 'https://github.com/royalveg/maven-web-application.git'
+}
+stage('build'){
+sh "${mavenhome}/bin/mvn package"
+}
+stage('sonarqubereport'){
+sh "${mavenhome}/bin/mvn clean sonar:sonar"
+}
+stage('nexusartirepo'){
+sh "${mavenhome}/bin/mvn clean deploy"
+}
+stage('deployappintotomcatserver'){
+sshagent(['a2680500-c36e-4bd3-a617-fb57e11dce22']) {
+  sh "scp -o StrictHostkeyChecking=no target/maven-web-application.war ec2-user@172.31.1.51:/opt/apache-tomcat-9.0.65/webapps/"  
+}
+
+}
+}
