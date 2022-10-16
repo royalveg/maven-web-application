@@ -1,6 +1,6 @@
 //slack notification pipeline
 //in word page 216
-node {
+node('walmart-node'){
     try {
         notifyBuild('STARTED')
 
