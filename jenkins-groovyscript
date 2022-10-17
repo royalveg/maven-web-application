@@ -1,8 +1,10 @@
 //slack notification pipeline
 //in word page 216
-node('walmart-node'){
+
+Library@('sharedlibs') _ 
+node('master'){
     try {
-        notifyBuild('STARTED')
+        sendSlackNotifications('STARTED')
 
 echo "the jobname is: ${env.JOB_NAME}"
 echo "the node name is: ${env.NODE_NAME}" 
@@ -33,10 +35,11 @@ sshagent(['a2680500-c36e-4bd3-a617-fb57e11dce22']) {
     throw e
   } finally {
     // Success or failure, always send notifications
-    notifyBuild(currentBuild.result)
+    sendSlackNotifications(currentBuild.result)
   }
 }
 
+/*
 def notifyBuild(String buildStatus = 'STARTED') {
   // build status of null means successful
   buildStatus =  buildStatus ?: 'SUCCESSFUL'
@@ -62,3 +65,4 @@ def notifyBuild(String buildStatus = 'STARTED') {
   // Send notifications
   slackSend (color: colorCode, message: summary, channel: "#walmart-dev")
 }
+*/
