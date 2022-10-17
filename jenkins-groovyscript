@@ -1,7 +1,7 @@
 //slack notification pipeline
 //in word page 216
 
-Library@('sharedlibs') _ 
+@Library('sharedlibs') _ 
 node('master'){
     try {
         sendSlackNotifications('STARTED')
