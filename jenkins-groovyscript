@@ -2,7 +2,7 @@
 //in word page 216
 
 @Library('sharedlibs') _ 
-node('master'){
+node(){
     try {
         sendSlackNotifications('STARTED')
 
